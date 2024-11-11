@@ -56,11 +56,11 @@ public class Player : MonoBehaviour
         }
 
         // Map the closest distance to a vibration intensity (0.0 to 1.0)
-        float vibrationIntensity = Mathf.Clamp01(Mathf.Pow((maxDistance - closestDistance) / maxDistance, 2)) * maxVibrationIntensity;
+        float vibrationIntensity = 1 - Mathf.Clamp01(Mathf.Pow((maxDistance - closestDistance) / maxDistance, 2)) * maxVibrationIntensity;
         if (RumbleManager.instance != null && vibrationIntensity > minThreshold)
         {
             RumbleManager.instance.RumblePulse(vibrationIntensity, vibrationIntensity, duration);
-            //Debug.Log(vibrationIntensity);
+            Debug.Log(vibrationIntensity);
         }
     }
 
