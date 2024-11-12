@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -14,7 +15,9 @@ public class Player : MonoBehaviour
     public LayerMask layerMask;
 
     Rigidbody2D rb;
-    private gameObject wall[] = GameObject.FindGameObjectsWithTag("Wall");
+
+    [Header("Walls")]
+    [SerializeField] public List<GameObject> walls;
 
     void Awake() {
         if (RumbleManager.instance == null)
@@ -84,22 +87,23 @@ public class Player : MonoBehaviour
 
         rb.linearVelocity = movement * playerSpeed;
     }
-}
-
-void ToggleWall()
-{
-    if (Input.GetKeyDown(KeyCode("o")))
+    void ToggleWall()
     {
-        foreach (GameObject wall in walls)
+        if (Input.GetKeyDown(KeyCode.O))
         {
-            if (wall.Color.opacity == 0)
+            foreach (GameObject wall in walls)
             {
-                wall.Color.opacity = 1;
+                if (wall.GetComponent<Renderer>().enabled == true)
+                {
+                    wall.GetComponent<Renderer>().enabled = false;
+                }
+                else
+                {
+                    wall.GetComponent<Renderer>().enabled = true;
+                }
+
             }
-            else
-            {
-                wall.Color.opacity = 0;
-            }   
         }
     }
 }
+
