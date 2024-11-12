@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public LayerMask layerMask;
 
     Rigidbody2D rb;
+    private gameObject wall[] = GameObject.FindGameObjectsWithTag("Wall");
 
     void Awake() {
         if (RumbleManager.instance == null)
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         HandleVibration();
+        ToggleWall();
     }
 
     void HandleVibration()
@@ -81,5 +83,23 @@ public class Player : MonoBehaviour
         }
 
         rb.linearVelocity = movement * playerSpeed;
+    }
+}
+
+void ToggleWall()
+{
+    if (Input.GetKeyDown(KeyCode("o")))
+    {
+        foreach (GameObject wall in walls)
+        {
+            if (wall.Color.opacity == 0)
+            {
+                wall.Color.opacity = 1;
+            }
+            else
+            {
+                wall.Color.opacity = 0;
+            }   
+        }
     }
 }
