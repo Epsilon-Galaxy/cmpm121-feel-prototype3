@@ -15,9 +15,7 @@ public class Player : MonoBehaviour
     public LayerMask layerMask;
 
     Rigidbody2D rb;
-
-    [Header("Walls")]
-    [SerializeField] public List<GameObject> walls;
+    private GameObject[] walls;
 
     void Awake() {
         if (RumbleManager.instance == null)
@@ -25,12 +23,14 @@ public class Player : MonoBehaviour
             Debug.LogWarning("RumbleManager instance is not set.");
         } 
         rb = GetComponent<Rigidbody2D>();
+
+        walls = GameObject.FindGameObjectsWithTag("Wall");
     }
 
     void Update()
     {
         HandleVibration();
-        ToggleWall();
+        ToggleWalls();
     }
 
     void HandleVibration()
@@ -87,21 +87,14 @@ public class Player : MonoBehaviour
 
         rb.linearVelocity = movement * playerSpeed;
     }
-    void ToggleWall()
+
+    void ToggleWalls()
     {
         if (Input.GetKeyDown(KeyCode.O))
         {
             foreach (GameObject wall in walls)
             {
-                if (wall.GetComponent<Renderer>().enabled == true)
-                {
-                    wall.GetComponent<Renderer>().enabled = false;
-                }
-                else
-                {
-                    wall.GetComponent<Renderer>().enabled = true;
-                }
-
+                wall.GetComponent<Renderer>().enabled = false|| !wall.GetComponent<Renderer>().enabled;
             }
         }
     }
