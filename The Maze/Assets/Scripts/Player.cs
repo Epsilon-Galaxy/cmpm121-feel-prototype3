@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -14,18 +15,28 @@ public class Player : MonoBehaviour
     public LayerMask layerMask;
 
     Rigidbody2D rb;
+    private GameObject[] walls;
 
-    void Awake() {
+    void Awake()
+    {
         if (RumbleManager.instance == null)
         {
             Debug.LogWarning("RumbleManager instance is not set.");
-        } 
+        }
         rb = GetComponent<Rigidbody2D>();
+
+        walls = GameObject.FindGameObjectsWithTag("Wall");
+
+        foreach (GameObject wall in walls)
+        {
+            wall.GetComponent<Renderer>().enabled = false;
+        }
     }
 
     void Update()
     {
         HandleVibration();
+        ToggleWalls();
     }
 
     void HandleVibration()
@@ -33,25 +44,25 @@ public class Player : MonoBehaviour
         float closestDistance = float.MaxValue;
 
         // Iterate through all directions to find the closest wall
-        for (float angle = 0; angle < 360; angle += 15) 
+        for (float angle = 0; angle < 360; angle += 15)
         {
             Vector2 direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, maxDistance, layerMask);
             if (hit.collider != null)
             {
-            float distance = hit.distance;
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-            }
+                float distance = hit.distance;
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                }
 
-            // Draw the raycast for visualization
-            Debug.DrawRay(transform.position, direction * distance, Color.red);
+                // Draw the raycast for visualization
+                Debug.DrawRay(transform.position, direction * distance, Color.red);
             }
             else
             {
-            // Draw the raycast for visualization
-            Debug.DrawRay(transform.position, direction * maxDistance, Color.green);
+                // Draw the raycast for visualization
+                Debug.DrawRay(transform.position, direction * maxDistance, Color.green);
             }
         }
 
@@ -82,4 +93,16 @@ public class Player : MonoBehaviour
 
         rb.linearVelocity = movement * playerSpeed;
     }
+
+    void ToggleWalls()
+    {
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            foreach (GameObject wall in walls)
+            {
+                wall.GetComponent<Renderer>().enabled = !wall.GetComponent<Renderer>().enabled;
+            }
+        }
+    }
 }
+
